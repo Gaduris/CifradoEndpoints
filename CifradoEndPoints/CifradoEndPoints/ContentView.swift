@@ -35,6 +35,7 @@ struct ContentView: View {
     @State private var encrytedTextVCOD: String = ""
     @State private var encrytedTextBDISP: String = ""
     @State private var encrytedTextALINK: String = ""
+    @State private var encrytedTextGETCAP: String = ""
     
     
     @State private var decryptedTextR: String = ""
@@ -57,6 +58,7 @@ struct ContentView: View {
     @State private var decryptedTextVCOD: String = ""
     @State private var decryptedTextBDISP: String = ""
     @State private var decryptedTextALINK: String = ""
+    @State private var decryptedTextGETCAP: String = ""
     
     var body: some View {
         VStack {
@@ -206,6 +208,14 @@ struct ContentView: View {
             let encryptedALINK = try AES(key: keyStr, iv: ivStr, padding: .pkcs7).encrypt(inputDataALINK.bytes)
             encrytedTextALINK = encryptedALINK.toBase64(options: Data.Base64EncodingOptions(rawValue: 0))
             print("AVISO LINK enc >> \(encrytedTextALINK)")
+            
+            
+            
+            // GET CAPCHA  /gestion/api/obtenCaptcha
+            let inputDataGETCAP = Data("/gestion/api/obtenCaptcha".utf8)
+            let encryptedGETCAP = try AES(key: keyStr, iv: ivStr, padding: .pkcs7).encrypt(inputDataGETCAP.bytes)
+            encrytedTextGETCAP = encryptedGETCAP.toBase64(options: Data.Base64EncodingOptions(rawValue: 0))
+            print("GET CAPCHA enc >> \(encrytedTextGETCAP)")
            
             
         } catch {
@@ -335,6 +345,14 @@ struct ContentView: View {
             decryptedTextALINK = String(bytes: decryptedDataALINK, encoding: .utf8) ?? ""
             print("AVISO LINK  dec >> \(decryptedTextALINK)")
             
+            
+            
+            
+            // GET CAPCHA  /gestion/api/obtenCaptcha
+            let encryptedDataGETCAP = Data(base64Encoded: encrytedTextGETCAP)
+            let decryptedDataGETCAP = try AES(key: keyStr, iv: ivStr, padding: .pkcs7).decrypt(encryptedDataGETCAP!.bytes)
+            decryptedTextGETCAP = String(bytes: decryptedDataGETCAP, encoding: .utf8) ?? ""
+            print("GET CAPCHA  dec >> \(decryptedTextGETCAP)")
             
         } catch {
             print("Error al desencriptar: \(error.localizedDescription)")
