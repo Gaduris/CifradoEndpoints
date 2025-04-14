@@ -36,6 +36,8 @@ struct ContentView: View {
     @State private var encrytedTextBDISP: String = ""
     @State private var encrytedTextALINK: String = ""
     @State private var encrytedTextGETCAP: String = ""
+    @State private var encrytedTextVALIDCOD: String = ""
+    @State private var encrytedTextBDISPCAPTCHA: String = ""
     
     
     @State private var decryptedTextR: String = ""
@@ -59,6 +61,9 @@ struct ContentView: View {
     @State private var decryptedTextBDISP: String = ""
     @State private var decryptedTextALINK: String = ""
     @State private var decryptedTextGETCAP: String = ""
+    @State private var decryptedTextVALIDCOD: String = ""
+    @State private var decryptedTextBDISPCAPTCHA: String = ""
+    
     
     var body: some View {
         VStack {
@@ -210,12 +215,23 @@ struct ContentView: View {
             print("AVISO LINK enc >> \(encrytedTextALINK)")
             
             
-            
             // GET CAPCHA  /gestion/api/obtenCaptcha
             let inputDataGETCAP = Data("/gestion/api/obtenCaptcha".utf8)
             let encryptedGETCAP = try AES(key: keyStr, iv: ivStr, padding: .pkcs7).encrypt(inputDataGETCAP.bytes)
             encrytedTextGETCAP = encryptedGETCAP.toBase64(options: Data.Base64EncodingOptions(rawValue: 0))
             print("GET CAPCHA enc >> \(encrytedTextGETCAP)")
+            
+            // VALID CODE EMAIL  /gestion/api/validaOTP
+            let inputDataVALIDCOD = Data("/gestion/api/validaOTP".utf8)
+            let encryptedVALIDCOD = try AES(key: keyStr, iv: ivStr, padding: .pkcs7).encrypt(inputDataVALIDCOD.bytes)
+            encrytedTextVALIDCOD = encryptedVALIDCOD.toBase64(options: Data.Base64EncodingOptions(rawValue: 0))
+            print("VALID CODE EMAIL enc >> \(encrytedTextVALIDCOD)")
+            
+            // BajaDispositivoCaptcha  /gestion/api/nuevoOTPBajaDispositivo
+            let inputDataBDISPCAPTCHA = Data("/gestion/api/nuevoOTPBajaDispositivo".utf8)
+            let encryptedBDISPCAPTCHA = try AES(key: keyStr, iv: ivStr, padding: .pkcs7).encrypt(inputDataBDISPCAPTCHA.bytes)
+            encrytedTextBDISPCAPTCHA = encryptedBDISPCAPTCHA.toBase64(options: Data.Base64EncodingOptions(rawValue: 0))
+            print("BAJA DE DISPOSITIVO CAPCHA enc >> \(encrytedTextBDISPCAPTCHA)")
            
             
         } catch {
@@ -346,13 +362,25 @@ struct ContentView: View {
             print("AVISO LINK  dec >> \(decryptedTextALINK)")
             
             
-            
-            
             // GET CAPCHA  /gestion/api/obtenCaptcha
             let encryptedDataGETCAP = Data(base64Encoded: encrytedTextGETCAP)
             let decryptedDataGETCAP = try AES(key: keyStr, iv: ivStr, padding: .pkcs7).decrypt(encryptedDataGETCAP!.bytes)
             decryptedTextGETCAP = String(bytes: decryptedDataGETCAP, encoding: .utf8) ?? ""
             print("GET CAPCHA  dec >> \(decryptedTextGETCAP)")
+            
+            // VALIDA CODIGO MAIL  /gestion/api/validaOTP
+            let encryptedDataVALIDCODE = Data(base64Encoded: encrytedTextVALIDCOD)
+            let decryptedDataVALIDCODE = try AES(key: keyStr, iv: ivStr, padding: .pkcs7).decrypt(encryptedDataVALIDCODE!.bytes)
+            decryptedTextVALIDCOD = String(bytes: decryptedDataVALIDCODE, encoding: .utf8) ?? ""
+            print("VALIDA CODIGO MAIL  dec >> \(decryptedTextVALIDCOD)")
+            
+            
+            // BAJA DE DISPOSITIVO CAPTCHA  /gestion/api/nuevoOTPBajaDispositivo
+            let encryptedDataBDISPCAPTCHA = Data(base64Encoded: encrytedTextBDISPCAPTCHA)
+            let decryptedDataBDISPCAPTCHA = try AES(key: keyStr, iv: ivStr, padding: .pkcs7).decrypt(encryptedDataBDISPCAPTCHA!.bytes)
+            decryptedTextBDISPCAPTCHA = String(bytes: decryptedDataBDISPCAPTCHA, encoding: .utf8) ?? ""
+            print("BAJA DE DISPOSITIVO CAPCHA  dec >> \(decryptedTextBDISPCAPTCHA)")
+            
             
         } catch {
             print("Error al desencriptar: \(error.localizedDescription)")
