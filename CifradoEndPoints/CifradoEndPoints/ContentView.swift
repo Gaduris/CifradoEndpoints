@@ -39,6 +39,7 @@ struct ContentView: View {
     @State private var encrytedTextVALIDCOD: String = ""
     @State private var encrytedTextBDISPCAPTCHA: String = ""
     @State private var encrytedTextCNGPWSCAPTCHA: String = ""
+    @State private var encrytedTextAUXILIARCAPTCHA: String = ""
     
     
     @State private var decryptedTextR: String = ""
@@ -65,6 +66,8 @@ struct ContentView: View {
     @State private var decryptedTextVALIDCOD: String = ""
     @State private var decryptedTextBDISPCAPTCHA: String = ""
     @State private var decryptedTextCNGPWSCAPTCHA: String = ""
+    @State private var decryptedTextAUXILIARCAPTCHA: String = ""
+   
     
     
     
@@ -242,6 +245,12 @@ struct ContentView: View {
             encrytedTextCNGPWSCAPTCHA = encryptedCNGPWSCAPTCHA.toBase64(options: Data.Base64EncodingOptions(rawValue: 0))
             print("CAMBIO PSW CAPCHA enc >> \(encrytedTextCNGPWSCAPTCHA)")
             
+            // Registrar Auxiliar Captcha /gestion/api/nuevoOTPAuxiliar
+            let inputDataAUXILIARCAPTCHA = Data("/gestion/api/nuevoOTPAuxiliar".utf8)
+            let encryptedAUXILIARCAPTCHA = try AES(key: keyStr, iv: ivStr, padding: .pkcs7).encrypt(inputDataAUXILIARCAPTCHA.bytes)
+            encrytedTextAUXILIARCAPTCHA = encryptedAUXILIARCAPTCHA.toBase64(options: Data.Base64EncodingOptions(rawValue: 0))
+            print("REGISTRAr AUXILIAR CAPTCHA enc >> \(encrytedTextAUXILIARCAPTCHA)")
+            
         } catch {
             print("Error al encriptar: \(error.localizedDescription)")
         }
@@ -394,6 +403,15 @@ struct ContentView: View {
             let decryptedDataCNGPWSCAPTCHA = try AES(key: keyStr, iv: ivStr, padding: .pkcs7).decrypt(encryptedDataCNGPWSCAPTCHA!.bytes)
             decryptedTextCNGPWSCAPTCHA = String(bytes: decryptedDataCNGPWSCAPTCHA, encoding: .utf8) ?? ""
             print("CAMBIO PSW CAPCHA  dec >> \(decryptedTextCNGPWSCAPTCHA)")
+            
+            
+            // Registrar Auxiliar  Captcha /gestion/api/nuevoOTPAuxiliar
+            let encryptedDataAUXILIARCAPTCHA = Data(base64Encoded: encrytedTextAUXILIARCAPTCHA)
+            let decryptedDataAUXILIARCAPTCHA = try AES(key: keyStr, iv: ivStr, padding: .pkcs7).decrypt(encryptedDataAUXILIARCAPTCHA!.bytes)
+            decryptedTextAUXILIARCAPTCHA = String(bytes: decryptedDataAUXILIARCAPTCHA, encoding: .utf8) ?? ""
+            print("Registrar Auxiliar  dec >> \(decryptedTextAUXILIARCAPTCHA)")
+            
+            
             
         } catch {
             print("Error al desencriptar: \(error.localizedDescription)")
