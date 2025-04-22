@@ -38,6 +38,7 @@ struct ContentView: View {
     @State private var encrytedTextGETCAP: String = ""
     @State private var encrytedTextVALIDCOD: String = ""
     @State private var encrytedTextBDISPCAPTCHA: String = ""
+    @State private var encrytedTextCNGPWSCAPTCHA: String = ""
     
     
     @State private var decryptedTextR: String = ""
@@ -63,6 +64,8 @@ struct ContentView: View {
     @State private var decryptedTextGETCAP: String = ""
     @State private var decryptedTextVALIDCOD: String = ""
     @State private var decryptedTextBDISPCAPTCHA: String = ""
+    @State private var decryptedTextCNGPWSCAPTCHA: String = ""
+    
     
     
     var body: some View {
@@ -232,7 +235,12 @@ struct ContentView: View {
             let encryptedBDISPCAPTCHA = try AES(key: keyStr, iv: ivStr, padding: .pkcs7).encrypt(inputDataBDISPCAPTCHA.bytes)
             encrytedTextBDISPCAPTCHA = encryptedBDISPCAPTCHA.toBase64(options: Data.Base64EncodingOptions(rawValue: 0))
             print("BAJA DE DISPOSITIVO CAPCHA enc >> \(encrytedTextBDISPCAPTCHA)")
-           
+            
+            // Cambio Password Captcha /gestion/api/nuevoOTPCambioPass
+            let inputDataCNGPWSCAPTCHA = Data("/gestion/api/nuevoOTPCambioPass".utf8)
+            let encryptedCNGPWSCAPTCHA = try AES(key: keyStr, iv: ivStr, padding: .pkcs7).encrypt(inputDataCNGPWSCAPTCHA.bytes)
+            encrytedTextCNGPWSCAPTCHA = encryptedCNGPWSCAPTCHA.toBase64(options: Data.Base64EncodingOptions(rawValue: 0))
+            print("CAMBIO PSW CAPCHA enc >> \(encrytedTextCNGPWSCAPTCHA)")
             
         } catch {
             print("Error al encriptar: \(error.localizedDescription)")
@@ -381,6 +389,11 @@ struct ContentView: View {
             decryptedTextBDISPCAPTCHA = String(bytes: decryptedDataBDISPCAPTCHA, encoding: .utf8) ?? ""
             print("BAJA DE DISPOSITIVO CAPCHA  dec >> \(decryptedTextBDISPCAPTCHA)")
             
+            // Cambio Password Captcha /gestion/api/nuevoOTPCambioPass
+            let encryptedDataCNGPWSCAPTCHA = Data(base64Encoded: encrytedTextCNGPWSCAPTCHA)
+            let decryptedDataCNGPWSCAPTCHA = try AES(key: keyStr, iv: ivStr, padding: .pkcs7).decrypt(encryptedDataCNGPWSCAPTCHA!.bytes)
+            decryptedTextCNGPWSCAPTCHA = String(bytes: decryptedDataCNGPWSCAPTCHA, encoding: .utf8) ?? ""
+            print("CAMBIO PSW CAPCHA  dec >> \(decryptedTextCNGPWSCAPTCHA)")
             
         } catch {
             print("Error al desencriptar: \(error.localizedDescription)")
