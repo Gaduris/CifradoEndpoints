@@ -120,8 +120,9 @@ struct ContentView: View {
             encrytedTextQA = encryptedDataQA.toBase64(options: Data.Base64EncodingOptions(rawValue: 0))
             print("QA enc >> \(encrytedTextQA)")
             
-            // DEBUG https://apoyociudadanoddos.ipa.derfe.ine.mx[
-            let inputDataDEB = Data("https://apoyociudadanoddos.ipa.derfe.ine.mx".utf8)
+            // DEBUG https://apoyociudadanoddos.ipa.derfe.ine.mx [old]
+            // DEBUG https://ac-des-gestion-74.ipa.derfe.ine.mx:8443 [new 2025]
+            let inputDataDEB = Data("https://ac-des-gestion-74.ipa.derfe.ine.mx:8443".utf8)
             let encryptedDataDEB = try AES(key: keyStr, iv: ivStr, padding: .pkcs7).encrypt(inputDataDEB.bytes)
             encrytedTextDEB = encryptedDataDEB.toBase64(options: Data.Base64EncodingOptions(rawValue: 0))
             print("DEVELOPMENT enc >> \(encrytedTextDEB)")
