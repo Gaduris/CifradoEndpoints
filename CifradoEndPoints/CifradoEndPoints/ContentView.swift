@@ -40,6 +40,7 @@ struct ContentView: View {
     @State private var encrytedTextBDISPCAPTCHA: String = ""
     @State private var encrytedTextCNGPWSCAPTCHA: String = ""
     @State private var encrytedTextAUXILIARCAPTCHA: String = ""
+    @State private var encrytedTextAVANCECAPTURA: String = ""
     
     
     @State private var decryptedTextR: String = ""
@@ -67,9 +68,7 @@ struct ContentView: View {
     @State private var decryptedTextBDISPCAPTCHA: String = ""
     @State private var decryptedTextCNGPWSCAPTCHA: String = ""
     @State private var decryptedTextAUXILIARCAPTCHA: String = ""
-   
-    
-    
+    @State private var decryptedTextAVANCECAPTURA: String = ""
     
     var body: some View {
         VStack {
@@ -252,6 +251,13 @@ struct ContentView: View {
             encrytedTextAUXILIARCAPTCHA = encryptedAUXILIARCAPTCHA.toBase64(options: Data.Base64EncodingOptions(rawValue: 0))
             print("REGISTRAr AUXILIAR CAPTCHA enc >> \(encrytedTextAUXILIARCAPTCHA)")
             
+            // Avance de captura /gestion/api/consultaAvance
+            let inputDataconsultAvance = Data("/gestion/api/consultaAvance".utf8)
+            let encryptedconsultAvance = try AES(key: keyStr, iv: ivStr, padding: .pkcs7).encrypt(inputDataconsultAvance.bytes)
+            encrytedTextAVANCECAPTURA = encryptedconsultAvance.toBase64(options: Data.Base64EncodingOptions(rawValue: 0))
+            print("AVANCE CAPTURA enc >> \(encrytedTextAVANCECAPTURA)")
+            
+            
         } catch {
             print("Error al encriptar: \(error.localizedDescription)")
         }
@@ -412,7 +418,11 @@ struct ContentView: View {
             decryptedTextAUXILIARCAPTCHA = String(bytes: decryptedDataAUXILIARCAPTCHA, encoding: .utf8) ?? ""
             print("Registrar Auxiliar  dec >> \(decryptedTextAUXILIARCAPTCHA)")
             
-            
+            // Avance de captura /gestion/api/consultaAvance
+            let encryptedDataAVANCECAPTURA = Data(base64Encoded: encrytedTextAVANCECAPTURA)
+            let decryptedDataAVANCECAPTURA = try AES(key: keyStr, iv: ivStr, padding: .pkcs7).decrypt(encryptedDataAVANCECAPTURA!.bytes)
+            decryptedTextAVANCECAPTURA = String(bytes: decryptedDataAVANCECAPTURA, encoding: .utf8) ?? ""
+            print("Avance captura  dec >> \(decryptedTextAVANCECAPTURA)")
             
         } catch {
             print("Error al desencriptar: \(error.localizedDescription)")
